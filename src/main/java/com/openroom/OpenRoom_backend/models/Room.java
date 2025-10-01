@@ -1,21 +1,44 @@
 package com.openroom.OpenRoom_backend.models;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.LinkedList;
 import java.util.List;
 
+@Entity
+@Table(name = "Rooms")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "rooms")
 public class Room {
-    private String id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @Column(unique = true)
     private String name;
-    private int limit;
+
+    private int memberLimit;
     private boolean privacy;
     private boolean ai;
-    private List<Member> members;
+
+    @Column(unique = true, nullable = false, length = 7)
+    private String roomCode;
+
+    private int admin;
+
+    // store only member IDs
+    @ElementCollection
+    @CollectionTable(name = "room_members", joinColumns = @JoinColumn(name = "room_id"))
+    @Column(name = "member_id")
+    private List<Integer> membersId = new LinkedList<>();
+
+    // store only chat IDs if you want lightweight relation
+    @ElementCollection
+    @CollectionTable(name = "room_chats", joinColumns = @JoinColumn(name = "room_id"))
+    @Column(name = "chat_id")
+    private List<Integer> chatIds = new LinkedList<>();
 }

@@ -25,7 +25,9 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(req -> req.anyRequest().authenticated())
+                .authorizeHttpRequests(req -> req
+                        .requestMatchers("/api/createRoom").permitAll()
+                        .anyRequest().permitAll())
                 .oauth2Login(oauth -> oauth.defaultSuccessUrl(frontendUrl, true))
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((request, response, authException) -> {
