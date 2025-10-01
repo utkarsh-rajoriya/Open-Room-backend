@@ -1,8 +1,25 @@
 package com.openroom.OpenRoom_backend.controllers;
 
-import org.springframework.web.bind.annotation.RestController;
+import com.openroom.OpenRoom_backend.services.ChatService;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 public class ChatController {
 
+    public ChatService chatService;
+
+    public ChatController(ChatService chatService) {
+        this.chatService = chatService;
+    }
+
+    @PostMapping("/send/{roomId}")
+    public void sendMessage(
+            @RequestBody Map<String, String> body,
+            @PathVariable("roomId") int roomId,
+            @RequestHeader("X-Client-Id") String clientId) {
+        String message = body.get("text");  // extract text
+        chatService.sendMessage(roomId, message, clientId);
+    }
 }
