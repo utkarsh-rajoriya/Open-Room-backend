@@ -30,10 +30,11 @@ public class BaseService {
 
         Member member = memberService.getMemberByEmail(email);
         if(member == null) return new HashMap<>(Map.of("message" , "user not found login again"));
+
         String roomCode = UUID.randomUUID().toString().replace("-" , "").substring(0,7).toUpperCase();
         room.setRoomCode(roomCode);
-        room.setAdmin(member.getId());
-        room.getMembersId().add(member.getId());
+        room.setAdminId(member.getId());
+        room.getMembers().add(member);
         Room savedRoom = roomRepo.save(room);
 
         return new HashMap<>(Map.of(
@@ -53,7 +54,7 @@ public class BaseService {
         if(member != null){
             if(!room.isPrivacy()){
                 //put member to room
-                room.getMembersId().add(member.getId());
+                room.getMembers().add(member);
 
                 //put room code to member joinedRoomList
                 member.getJoinedRoomCodes().add(room.getRoomCode());
@@ -66,7 +67,7 @@ public class BaseService {
                 if(!room.getRoomCode().equals(roomCode)) return new HashMap<>(Map.of("message", "Incorrect roomCode"));
 
                 //put member to room
-                room.getMembersId().add(member.getId());
+                room.getMembers().add(member);
 
                 //put room code to member joinedRoomList
                 member.getJoinedRoomCodes().add(room.getRoomCode());

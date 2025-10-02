@@ -28,17 +28,11 @@ public class Room {
     @Column(unique = true, nullable = false, length = 7)
     private String roomCode;
 
-    private int admin;
+    private int adminId;
 
-    // store only member IDs
-    @ElementCollection
-    @CollectionTable(name = "room_members", joinColumns = @JoinColumn(name = "room_id"))
-    @Column(name = "member_id")
-    private List<Integer> membersId = new LinkedList<>();
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Member> members = new LinkedList<>();
 
-    // store only chat IDs if you want lightweight relation
-    @ElementCollection
-    @CollectionTable(name = "room_chats", joinColumns = @JoinColumn(name = "room_id"))
-    @Column(name = "chat_id")
-    private List<Integer> chatIds = new LinkedList<>();
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChatMessage> messages = new LinkedList<>();
 }

@@ -19,9 +19,12 @@ public class Member {
     private int id;
 
     private String name;
+    private String picture;
 
     @Column(unique = true)
     private String email;
+
+    private String clientChatId;
 
     // store joined room IDs
     @ElementCollection

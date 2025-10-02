@@ -18,8 +18,10 @@ public class ChatController {
     public void sendMessage(
             @RequestBody Map<String, String> body,
             @PathVariable("roomId") int roomId,
-            @RequestHeader("X-Client-Id") String clientId) {
-        String message = body.get("text");  // extract text
-        chatService.sendMessage(roomId, message, clientId);
+            @RequestHeader("X-Client-Id") String clientId,
+            @RequestHeader("email") String email
+    ) {
+        String message = body.get("text");
+        chatService.sendMessage(roomId, message, clientId, email);
     }
 }

@@ -13,9 +13,9 @@ public class MemberService {
         this.memberRepo = memberRepo;
     }
 
-    public void  registerMember(Member member){
+    public Member registerMember(Member member){
         System.out.println("member saved : " +  member.toString());
-        memberRepo.save(member);
+        return memberRepo.save(member);
     }
 
     public Member getMemberByEmail(String email) {

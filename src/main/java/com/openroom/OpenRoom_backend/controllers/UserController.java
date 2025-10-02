@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,6 +24,18 @@ public class UserController {
 
     public UserController(MemberService memberService) {
         this.memberService = memberService;
+    }
+
+    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    private static final SecureRandom random = new SecureRandom();
+
+    public static String generateRandomString(int length) {
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            int index = random.nextInt(CHARACTERS.length());
+            sb.append(CHARACTERS.charAt(index));
+        }
+        return sb.toString();
     }
 
     @GetMapping("test")
@@ -37,19 +50,40 @@ public class UserController {
 
     @GetMapping("user-info")
     public Map<String , Object> userInfo(@AuthenticationPrincipal OAuth2User user){
-        System.out.println("fetching info running");
         if(user == null){
             return Map.of("error" , "Unauthorized");
         }
+        Member mbr = memberService.getMemberByEmail((String)user.getAttributes().get("email"));
         try {
-            //Register Member
-            if(memberService.getMemberByEmail((String)user.getAttributes().get("email")) == null) {
+            if(mbr == null) {
                 Member member = new Member();
                 member.setName((String) user.getAttributes().get("name"));
                 member.setEmail((String) user.getAttributes().get("email"));
-                memberService.registerMember(member);
+                member.setClientChatId(generateRandomString(8));
+                if(user.getAttributes().get("picture") != null){
+                member.setPicture((String) user.getAttributes().get("picture"));
+                }else{
+                member.setPicture((String) user.getAttributes().get("avatar_url"));
+                }
+                mbr = memberService.registerMember(member);
+                System.out.println("member saved : " + mbr);
             }
-            return user.getAttributes();
+            else if(user.getAttributes().get("picture") != null){
+                if(!user.getAttributes().get("picture").equals(mbr.getPicture())){
+                    mbr.setPicture((String)user.getAttributes().get("picture"));
+                    memberService.registerMember(mbr);
+                }
+            }else if(user.getAttributes().get("avatar_url") != null) {
+                if (!user.getAttributes().get("avatar_url").equals(mbr.getPicture())) {
+                    mbr.setPicture((String) user.getAttributes().get("avatar_url"));
+                    memberService.registerMember(mbr);
+                }
+            }
+
+            return new HashMap<>(Map.of(
+                    "userInfo", user.getAttributes(),
+                    "clientChatId", mbr.getClientChatId()
+            ));
         }
         catch (Exception e){
             System.out.println(e.getMessage());
