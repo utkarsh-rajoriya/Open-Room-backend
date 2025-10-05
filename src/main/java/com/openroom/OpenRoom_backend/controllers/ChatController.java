@@ -24,9 +24,10 @@ public class ChatController {
         boolean ai =(boolean) body.get("ai");
         if(ai){
             chatService.sendMessageToAi(roomId, message, clientId, email);
-            return;
         }
+        else{
         chatService.sendMessage(roomId, message, clientId, email);
+        }
     }
 
 }

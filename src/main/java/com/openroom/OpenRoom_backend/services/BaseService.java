@@ -81,9 +81,7 @@ public class BaseService {
     }
 
     public Map<String, Object> getRooms(String email) {
-
         List<Room> allRooms = roomRepo.findAll();
-
         Member member = memberService.getMemberByEmail(email);
         if (member == null) {
             return Map.of("message", "Member not found, login again!");
@@ -125,7 +123,6 @@ public class BaseService {
                 "availableRooms", availableRooms
         );
     }
-
 
     public Map<String, String> checkUserValidity(int roomId, String email) {
         Room room = roomRepo.findById(roomId).orElse(null);

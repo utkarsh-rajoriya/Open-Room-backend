@@ -9,6 +9,7 @@ import com.openroom.OpenRoom_backend.services.BaseService;
 import com.openroom.OpenRoom_backend.services.ChatService;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 import java.util.HashMap;
 import java.util.List;
@@ -66,8 +67,8 @@ public class BaseController {
         return baseService.checkUserValidity(roomId, email);
     }
 
-    @PostMapping("ai/chat")
-    public String chat(@RequestParam("query") String query){
-        return aiService.chat(query);
-    }
+//    @PostMapping("ai/chat")
+//    public Flux<String> chat(@RequestParam("query") String query){
+//        return aiService.chat(query);
+//    }
 }
