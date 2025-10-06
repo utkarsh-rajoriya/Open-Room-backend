@@ -26,6 +26,16 @@ public class BaseController {
         this.aiService = aiService;
     }
 
+    @GetMapping("testing1")
+    public String testing1(){
+        return "testing public url";
+    }
+
+    @GetMapping("testing2")
+    public String testing2(){
+        return "testing private url";
+    }
+
     @PostMapping("createRoom")
     public Map<String , Object> createRoom(@RequestBody Room room , @RequestParam("email") String email){
         try{

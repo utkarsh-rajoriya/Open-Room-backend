@@ -26,6 +26,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(req -> req
+                        .requestMatchers("/api/testing1").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth -> oauth.defaultSuccessUrl(frontendUrl, true))
