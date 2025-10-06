@@ -1,6 +1,7 @@
 package com.openroom.OpenRoom_backend.services;
 
 import com.openroom.OpenRoom_backend.models.Member;
+import com.openroom.OpenRoom_backend.models.MembersInfoDTO;
 import com.openroom.OpenRoom_backend.models.Room;
 import com.openroom.OpenRoom_backend.models.RoomDto;
 import com.openroom.OpenRoom_backend.repositories.MemberRepo;
@@ -124,15 +125,32 @@ public class BaseService {
         );
     }
 
-    public Map<String, String> checkUserValidity(int roomId, String email) {
+    public Map<String, Object> checkUserValidity(int roomId, String email) {
         Room room = roomRepo.findById(roomId).orElse(null);
         Member member = memberRepo.findByEmail(email);
         if(room == null || member == null) return new HashMap<>(Map.of("message" , "Not valid"));
 
         String roomCode = room.getRoomCode();
         for(String code : member.getJoinedRoomCodes()){
-            if(roomCode.equals(code)) return new HashMap<>(Map.of("message", "valid"));
+            if(roomCode.equals(code)) return new HashMap<>(Map.of("message", "valid", "ai", room.isAi(), "roomName", room.getName()));
         }
         return new HashMap<>(Map.of("message", "Not valid"));
+    }
+
+    public Map<String,Object> roomMembersInfo(int roomId) {
+        Room room = roomRepo.findById(roomId).orElse(null);
+        Member admin = memberRepo.findById(room.getAdminId()).orElse(null);
+        MembersInfoDTO adminDto = new MembersInfoDTO(admin.getId(), admin.getName(), admin.getEmail(), admin.getPicture());
+        if(room == null) return null;
+        List<Member> members = room.getMembers();
+        List<MembersInfoDTO> membersInfoDto = new LinkedList<>();
+        for(Member m : members){
+            membersInfoDto.add(new MembersInfoDTO(m.getId(), m.getName(), m.getEmail(), m.getPicture()));
+        }
+        return new HashMap<>(Map.of(
+                "membersInfo" , membersInfoDto,
+                "roomName", room.getName(),
+                "admin" , adminDto
+        ));
     }
 }

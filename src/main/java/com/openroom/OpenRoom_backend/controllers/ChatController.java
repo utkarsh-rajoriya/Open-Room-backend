@@ -20,14 +20,13 @@ public class ChatController {
             @RequestHeader("X-Client-Id") String clientId,
             @RequestHeader("email") String email
     ) {
+        // Extract data from the map
         String message = body.get("text").toString();
-        boolean ai =(boolean) body.get("ai");
-        if(ai){
-            chatService.sendMessageToAi(roomId, message, clientId, email);
-        }
-        else{
-        chatService.sendMessage(roomId, message, clientId, email);
-        }
+        boolean isAiQuery = (boolean) body.get("ai");
+
+        // A single call to the new, robust service method.
+        // The complex if/else logic is gone from the controller.
+        chatService.processUserMessage(roomId, message, clientId, email, isAiQuery);
     }
 
 }

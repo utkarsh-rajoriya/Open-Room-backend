@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class RoomDto {
+public class  RoomDto {
     int id;
     String name;
     int currentMembers;

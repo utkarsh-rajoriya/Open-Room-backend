@@ -1,9 +1,6 @@
 package com.openroom.OpenRoom_backend.controllers;
 
-import com.openroom.OpenRoom_backend.models.ChatMessage;
-import com.openroom.OpenRoom_backend.models.ChatMessageDto;
-import com.openroom.OpenRoom_backend.models.JoinRoomRequest;
-import com.openroom.OpenRoom_backend.models.Room;
+import com.openroom.OpenRoom_backend.models.*;
 import com.openroom.OpenRoom_backend.services.AiService;
 import com.openroom.OpenRoom_backend.services.BaseService;
 import com.openroom.OpenRoom_backend.services.ChatService;
@@ -60,11 +57,16 @@ public class BaseController {
     }
 
     @PostMapping("checkUserValidity")
-    public Map<String , String> checkUserValidity(@RequestBody Map<String,Object> map){
+    public Map<String , Object> checkUserValidity(@RequestBody Map<String,Object> map){
         int roomId = Integer.parseInt(map.get("roomId").toString());
         String email = map.get("email").toString();
 
         return baseService.checkUserValidity(roomId, email);
+    }
+
+    @GetMapping("roomMembersInfo")
+    public Map<String,Object> roomMembersInfo(@RequestParam("roomId") int roomId){
+        return baseService.roomMembersInfo(roomId);
     }
 
 //    @PostMapping("ai/chat")

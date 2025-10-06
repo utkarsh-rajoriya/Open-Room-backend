@@ -14,7 +14,13 @@ public class AiService {
     }
 
     public String chat(String query) {
-        String response = chatClient.prompt(query).call().content();
+        String response = chatClient
+                .prompt()
+                .system("Respond accurately and concisely. Keep answers short unless the user asks for more details. " +
+                        "Be humanized in casual conversation. If asked personal or flirty questions, respond in a natural, slightly edgy way, but do not be offensive or harmful.")
+                .user(query)
+                .call()
+                .content();
         return sanitizeResponse(response);
     }
 
